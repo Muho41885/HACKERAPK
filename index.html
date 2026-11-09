@@ -102,16 +102,16 @@
 </head>
 <body>
   <main class="panel" id="prank">
-    <span class="badge">GÖRSEL SİMÜLASYON · DOSYALARINIZA DOKUNULMAZ</span>
+    <span class="badge">hacking...· DOSYALARINIZA DOKUNULuyor...</span>
     <h1>Tüm Dosyalarınız Şifrelendi</h1>
-    <p class="description" id="description">10 saniye sonra tum dosyalariniz ele gecirebircez. tum dosyalari okuyabiliriz, değiştirebilirim veya silibilirim.</p>
+    <p class="description" id="description">15 saniye sonra tum dosyalariniz ele gecirebircez. tum dosyalari okuyabiliriz, değiştirebilirim veya silibilirim.</p>
     <div class="countdown" id="countdown" aria-live="assertive">10</div>
     <div class="status" id="status"> sistem  başlatılıyor…</div>
     <section class="terminal" aria-label="Sahte sistem günlükleri">
-      <div class="terminal-title">SIMÜLASYON TERMİNALİ — YEREL GÖRSEL EFEKT</div>
+      <div class="terminal-title">TERMİNALİ — YEREL GÖRSEL EFEKT</div>
       <div id="logs" aria-live="polite"></div>
     </section>
-    <button class="escape" id="endButton" type="button">Şakayı bitir</button>
+    <button class="escape" id="endButton" type="button"> bitir</button>
   </main>
 
   <div class="blackout" id="blackout" hidden aria-live="polite">
@@ -127,9 +127,9 @@
       const endButton = document.getElementById('endButton');
       const lines = [
         '[SIM] Tarayıcı içi görsel efekt hazırlanıyor…',
-        '[SIM] Gerçek dosya sistemi kullanılmıyor.',
-        '[SIM] Ağ isteği gönderilmedi.',
-        '[SIM] Sayaç animasyonu çalışıyor…',
+        '[SIM] Gerçek dosya sistemi kullanıliyor...',
+        '[SIM] Ağ isteği gönderiliyor.',
+        '[SIM] virus girmeye çalışıyor…',
         '[SIM] Bu bir Virus; cihaz zararda.'
       ];
       let seconds = 15;
@@ -159,10 +159,10 @@
         document.querySelector('h1').textContent = 'Trollendin!';
         document.getElementById('description').textContent = 'Cihazına hiçbir şey olmadı; bu yalnızca tarayıcıda gösterilen bir animasyondu. Uygulamayı kapatabilirsin. 😉';
         countdown.textContent = '✓';
-        status.textContent = 'Her şey yolunda. Bu sayfayı kapatabilirsin.';
+        status.textContent = 'CIHAZINIZ BILINMEYEN APK TAN HACKLENDI. HACKED.';
         endButton.textContent = 'Tamam';
         endButton.addEventListener('click', () => {
-          document.querySelector('.panel').innerHTML = '<h1>Cihaziniza girdik🙂</h1><p>Cihazın zararda. Bu sayfayı kapatabilirsin.</p>';
+          document.querySelector('.panel').innerHTML = '<h1>Cihaziniza girdik</h1><p>Cihazın zararda. Bu sayfayı kapatabilirsin.</p>';
         }, { once: true });
       }
 
@@ -172,7 +172,7 @@
         status.textContent = 'Görüntü efekti etkin — otomatik olarak sona erecek.';
         revealTimer = setTimeout(() => {
           // Alert is intentionally delayed until after the visual effect and clearly reveals the prank.
-          alert('Dosyalarin silinecek, uygulamayı kapatabilirsin. 😉');
+          alert('Dosyalarin silinecek, IYI BAKIN. 😉');
           reveal();
         }, 5000);
       }
