@@ -1,1 +1,198 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#100607">
+  <title>Sistem Uyarısı — Simülasyon</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Courier New", Courier, monospace;
+      background: #100607;
+      color: #f5eeee;
+      --red: #ff3434;
+      --muted: #bc9999;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100svh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: radial-gradient(ellipse at center, #351012 0, #19090b 45%, #080607 100%);
+    }
+    .panel {
+      width: min(760px, 100%);
+      border: 1px solid #8e252b;
+      background: rgba(12, 8, 9, .94);
+      box-shadow: 0 0 38px #a20d1933, inset 0 0 30px #4e0a1022;
+      padding: clamp(20px, 5vw, 42px);
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      border: 1px solid var(--red);
+      color: #ffb5b5;
+      padding: 6px 10px;
+      font-size: .75rem;
+      letter-spacing: .12em;
+    }
+    h1 { color: var(--red); font-size: clamp(1.55rem, 5vw, 2.7rem); margin: 22px 0 10px; text-shadow: 0 0 16px #f00a; }
+    .description { color: #d3bcbc; line-height: 1.6; margin: 0 auto; max-width: 580px; }
+    .countdown {
+      color: #fff;
+      font-size: clamp(5rem, 24vw, 9rem);
+      font-weight: bold;
+      line-height: 1;
+      margin: 28px 0 18px;
+      text-shadow: 0 0 24px #ff1717aa;
+      font-variant-numeric: tabular-nums;
+    }
+    .status { color: #ff7777; min-height: 1.4em; font-size: .9rem; }
+    .terminal {
+      margin-top: 26px;
+      border: 1px solid #482126;
+      background: #080708;
+      padding: 14px 16px;
+      text-align: left;
+      height: 150px;
+      overflow: hidden;
+      color: #d5aaaa;
+      font-size: .78rem;
+      line-height: 1.65;
+    }
+    .terminal-title { color: #ff7777; border-bottom: 1px solid #3b2023; padding-bottom: 7px; margin-bottom: 7px; }
+    #logs { display: flex; flex-direction: column; }
+    .log-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .escape {
+      margin-top: 18px;
+      border: 1px solid #88686a;
+      background: transparent;
+      color: #d8caca;
+      font: inherit;
+      padding: 9px 14px;
+      cursor: pointer;
+    }
+    .escape:hover, .escape:focus-visible { border-color: #fff; color: #fff; }
+    .blackout {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: #000;
+      display: grid;
+      place-items: center;
+      color: #888;
+      padding: 24px;
+      text-align: center;
+    }
+    .blackout[hidden] { display: none; }
+    .blackout p { max-width: 440px; line-height: 1.6; }
+    body.revealed { background: #101914; }
+    body.revealed .panel { border-color: #37684a; box-shadow: none; }
+    body.revealed h1 { color: #8fe0a8; text-shadow: none; }
+    @media (max-width: 420px) {
+      body { padding: 12px; }
+      .terminal { height: 130px; font-size: .7rem; }
+      .description { font-size: .9rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <main class="panel" id="prank">
+    <span class="badge">GÖRSEL SİMÜLASYON · DOSYALARINIZA DOKUNULMAZ</span>
+    <h1>Tüm Dosyalarınız Şifrelendi</h1>
+    <p class="description" id="description">Bu ekran yalnızca tarayıcıda çalışan bir şaka animasyonudur. Hiçbir dosya okunmaz, değiştirilmez veya silinmez.</p>
+    <div class="countdown" id="countdown" aria-live="assertive">10</div>
+    <div class="status" id="status">Sahte sistem günlükleri başlatılıyor…</div>
+    <section class="terminal" aria-label="Sahte sistem günlükleri">
+      <div class="terminal-title">SIMÜLASYON TERMİNALİ — YEREL GÖRSEL EFEKT</div>
+      <div id="logs" aria-live="polite"></div>
+    </section>
+    <button class="escape" id="endButton" type="button">Şakayı bitir</button>
+  </main>
 
+  <div class="blackout" id="blackout" hidden aria-live="polite">
+    <p>Ekran efekti — cihazın açık ve güvende. Birazdan şaka açıklanacak.</p>
+  </div>
+
+  <script>
+    (() => {
+      const countdown = document.getElementById('countdown');
+      const status = document.getElementById('status');
+      const logs = document.getElementById('logs');
+      const blackout = document.getElementById('blackout');
+      const endButton = document.getElementById('endButton');
+      const lines = [
+        '[SIM] Tarayıcı içi görsel efekt hazırlanıyor…',
+        '[SIM] Gerçek dosya sistemi kullanılmıyor.',
+        '[SIM] Ağ isteği gönderilmedi.',
+        '[SIM] Sayaç animasyonu çalışıyor…',
+        '[SIM] Bu bir şaka; cihaz güvende.'
+      ];
+      let seconds = 10;
+      let finished = false;
+      let tickTimer;
+      let revealTimer;
+      let logIndex = 0;
+
+      function addLog() {
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        line.textContent = lines[logIndex % lines.length];
+        logs.appendChild(line);
+        while (logs.children.length > 5) logs.removeChild(logs.firstChild);
+        logIndex++;
+      }
+
+      function reveal() {
+        if (finished) return;
+        finished = true;
+        clearInterval(tickTimer);
+        clearInterval(logTimer);
+        clearTimeout(revealTimer);
+        blackout.hidden = true;
+        document.body.classList.add('revealed');
+        document.querySelector('.badge').textContent = 'ŞAKA · SİMÜLASYON TAMAMLANDI';
+        document.querySelector('h1').textContent = 'Trollendin!';
+        document.getElementById('description').textContent = 'Cihazına hiçbir şey olmadı; bu yalnızca tarayıcıda gösterilen bir animasyondu. Uygulamayı kapatabilirsin. 😉';
+        countdown.textContent = '✓';
+        status.textContent = 'Her şey yolunda. Bu sayfayı kapatabilirsin.';
+        endButton.textContent = 'Tamam';
+        endButton.addEventListener('click', () => {
+          document.querySelector('.panel').innerHTML = '<h1>Şaka bitti 🙂</h1><p>Cihazın güvende. Bu sayfayı kapatabilirsin.</p>';
+        }, { once: true });
+      }
+
+      function startBlackout() {
+        if (finished) return;
+        blackout.hidden = false;
+        status.textContent = 'Görüntü efekti etkin — otomatik olarak sona erecek.';
+        revealTimer = setTimeout(() => {
+          // Alert is intentionally delayed until after the visual effect and clearly reveals the prank.
+          alert('Trollendin! Cihazına hiçbir şey olmadı, uygulamayı kapatabilirsin. 😉');
+          reveal();
+        }, 5000);
+      }
+
+      addLog();
+      const logTimer = setInterval(addLog, 1300);
+      tickTimer = setInterval(() => {
+        seconds--;
+        countdown.textContent = String(seconds);
+        if (seconds <= 0) {
+          clearInterval(tickTimer);
+          startBlackout();
+        }
+      }, 1000);
+      endButton.addEventListener('click', reveal);
+      // Escape provides an immediate, predictable way to end the visual prank.
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') reveal();
+      });
+    })();
+  </script>
+</body>
+</html>
