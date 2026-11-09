@@ -104,9 +104,9 @@
   <main class="panel" id="prank">
     <span class="badge">GÖRSEL SİMÜLASYON · DOSYALARINIZA DOKUNULMAZ</span>
     <h1>Tüm Dosyalarınız Şifrelendi</h1>
-    <p class="description" id="description">Bu ekran yalnızca tarayıcıda çalışan bir şaka animasyonudur. Hiçbir dosya okunmaz, değiştirilmez veya silinmez.</p>
+    <p class="description" id="description">10 saniye sonra tum dosyalariniz ele gecirebircez. tum dosyalari okuyabiliriz, değiştirebilirim veya silibilirim.</p>
     <div class="countdown" id="countdown" aria-live="assertive">10</div>
-    <div class="status" id="status">Sahte sistem günlükleri başlatılıyor…</div>
+    <div class="status" id="status"> sistem  başlatılıyor…</div>
     <section class="terminal" aria-label="Sahte sistem günlükleri">
       <div class="terminal-title">SIMÜLASYON TERMİNALİ — YEREL GÖRSEL EFEKT</div>
       <div id="logs" aria-live="polite"></div>
@@ -115,7 +115,7 @@
   </main>
 
   <div class="blackout" id="blackout" hidden aria-live="polite">
-    <p>Ekran efekti — cihazın açık ve güvende. Birazdan şaka açıklanacak.</p>
+    <p>Ekran efekti — cihazına bulastik ve cihazin zarar gorundu. CIHAZINIZA VIRUS BULASTI_.</p>
   </div>
 
   <script>
@@ -130,9 +130,9 @@
         '[SIM] Gerçek dosya sistemi kullanılmıyor.',
         '[SIM] Ağ isteği gönderilmedi.',
         '[SIM] Sayaç animasyonu çalışıyor…',
-        '[SIM] Bu bir şaka; cihaz güvende.'
+        '[SIM] Bu bir Virus; cihaz zararda.'
       ];
-      let seconds = 10;
+      let seconds = 15;
       let finished = false;
       let tickTimer;
       let revealTimer;
@@ -162,7 +162,7 @@
         status.textContent = 'Her şey yolunda. Bu sayfayı kapatabilirsin.';
         endButton.textContent = 'Tamam';
         endButton.addEventListener('click', () => {
-          document.querySelector('.panel').innerHTML = '<h1>Şaka bitti 🙂</h1><p>Cihazın güvende. Bu sayfayı kapatabilirsin.</p>';
+          document.querySelector('.panel').innerHTML = '<h1>Cihaziniza girdik🙂</h1><p>Cihazın zararda. Bu sayfayı kapatabilirsin.</p>';
         }, { once: true });
       }
 
@@ -172,7 +172,7 @@
         status.textContent = 'Görüntü efekti etkin — otomatik olarak sona erecek.';
         revealTimer = setTimeout(() => {
           // Alert is intentionally delayed until after the visual effect and clearly reveals the prank.
-          alert('Trollendin! Cihazına hiçbir şey olmadı, uygulamayı kapatabilirsin. 😉');
+          alert('Dosyalarin silinecek, uygulamayı kapatabilirsin. 😉');
           reveal();
         }, 5000);
       }
